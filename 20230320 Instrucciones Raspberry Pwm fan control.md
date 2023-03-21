@@ -27,7 +27,7 @@ PID=`sudo pidof tempfanpwm`
 sudo kill -9 $PID
 
 
-Hacer que el programa se lanze al arrancar el sistema
+Hacer que el programa se lance al arrancar el sistema
 -----------------------------------------------------
 La forma más sencilla, y quizás la más apta para utilizar en la mayoría de distros, es la de lanzar el programa a través del archivo rc.local (el cual se ejecuta al arrancar el sistema y una vez que todos los servicios iniciales estén inicializados):
 
