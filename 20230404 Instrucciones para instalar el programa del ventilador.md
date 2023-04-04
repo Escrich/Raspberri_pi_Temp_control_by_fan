@@ -37,7 +37,7 @@ tempfanpwm &
 
 
 
-salvamos con control o y salimos con control x
+salvamos con control o, y salimos con control x
 
 reiniciamos la raspberry con:
 
