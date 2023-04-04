@@ -43,9 +43,12 @@ reiniciamos la raspberry con:
 
 ~sudo reboot now
 
-Y al arrancar de nuevo el control del ventilador y el led intermitente estará funcionando
+Y al arrancar de nuevo, el control del ventilador, y el led intermitente, estarán funcionando
+
 También encontrarás un log en el directorio /home/pi, que se llama ventilador.log
+
 y que te proporciona información del estado del control del ventilador
+
 Este metodo largo te permite tener el código fuente, (tempfanpwm.c), y hacer cambios si lo consideras oportuno.
 
 
@@ -75,9 +78,12 @@ reiniciamos la raspberry con:
 
 ~sudo reboot now
 
-Y al arrancar de nuevo el control del ventilador y el led intermitente estará funcionando
+Y al arrancar de nuevo, el control del ventilador, y el led intermitente, estarán funcionando
+
 También encontrarás un log en el directorio /home/pi, que se llama ventilador.log
+
 y que te proporciona información del estado del control del ventilador
+
 
 
 
