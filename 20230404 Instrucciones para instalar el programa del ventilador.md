@@ -4,9 +4,9 @@ Metodo largo, compilando:
 
 ~cd $HOME
 
-~git clone https://github.com/Escrich/OPi_FanTempControl.git
+~git clone https://github.com/Escrich/Raspberri_pi_Temp_control_by_fan.git
 
-~cd OPi_FanTempControl/Source_code
+~cd Raspberri_pi_Temp_control_by_fan/Source_code
 
 ~gcc -Wall -o tempfanpwm tempfanpwm.c -lwiringPi -lpthread
 
@@ -54,7 +54,7 @@ Este metodo largo te permite tener el código fuente, (tempfanpwm.c), y hacer ca
 
 
 Metodo corto, copiando el ejecutable que está en:
-https://github.com/Escrich/OPi_FanTempControl/blob/master/Compiled_executable_file/tempfanpwm
+https://github.com/Escrich/Raspberri_pi_Temp_control_by_fan/blob/master/Compiled_executable_file/tempfanpwm
 
 Baja este fichero y ponlo en tu maquina, por ejemplo en el directorio /home/pi, a partir de ahí ejecuta los siguientes comandos:
 
