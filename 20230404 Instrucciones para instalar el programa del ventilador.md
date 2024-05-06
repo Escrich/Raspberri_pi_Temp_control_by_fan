@@ -45,7 +45,7 @@ reiniciamos la raspberry con:
 
 Y al arrancar de nuevo, el control del ventilador, y el led intermitente, estarán funcionando
 
-También encontrarás un log en el directorio /home/pi, que se llama ventilador.log
+También encontrarás un log en el directorio /tmp/, que se llama ventilador.log
 
 y que te proporciona información del estado del control del ventilador
 
