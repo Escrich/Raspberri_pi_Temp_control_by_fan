@@ -8,14 +8,15 @@
 /* Version: 1.0.2                                                  */
 /* Autor de la presente versión con PWM continuo: Escrich          */
 /* Fecha: 27/01/2023                                               */
-/* Version: 2.0.0                                                  */
+/* Version: 2.0.1                                                  */
 /* Descripcion: Control automatico de ventilador segun temperatura */
 /*              con registro periodico del estado del programa     */
 /*              cambios de velocidad del ventilador                */
 /*              proporcional a la temperatura                      */
 /*              Led que cambia de estado a cada ciclo (2 seg.)     */
 /*              indicando que el programa está activo              */
-/*              JMEC 20230127                                      */
+/*              JMEC 20230127 Version: 2.0.0                       */
+/*              JMEC 20240506 Version: 2.0.1                       */
 /*******************************************************************/
 
 // Librerias
@@ -42,7 +43,7 @@
 #define T_READS 5                                         // Tiempo de espera entre lecturas de temperatura (5s)
 #define T_ALIVE 300                                        // 600// Tiempo de espera entre escritura en el archivo Log, para determinar que el programa esta en ejecucion (600s -> 10m)
 #define FILE_TEMP "/sys/class/thermal/thermal_zone0/temp" // Ruta y nombre del archivo de acceso a la temperatura
-#define FILE_LOG "/home/pi/ventilador.log"                // Ruta y nombre de archivo Log cambiado para verlo mas facilmente en &HOME escrich
+#define FILE_LOG "/tmp/ventilador.log"                    // Ruta y nombre de archivo .log
 #define LINE_SIZE 256                                     // Tamaño maximo de linea que puede ser escrita en el archivo Log
 #define MAX_LINES 1000                                    // Numero maximo de lineas que puede contener el archivo Log (1000 lineas)
 
