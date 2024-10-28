@@ -6,7 +6,7 @@
 /* Autor de la version original por tramos: JRios                  */
 /* Fecha: 23/06/2017                                               */
 /* Version: 1.0.2                                                  */
-/* Autor de la presente versión con PWM continuo: Escrich          */
+/* Autor de la presente version con PWM continuo: Escrich          */
 /* Fecha: 27/01/2023                                               */
 /* Version: 2.0.1                                                  */
 /* Descripcion: Control automatico de ventilador segun temperatura */
@@ -14,9 +14,10 @@
 /*              cambios de velocidad del ventilador                */
 /*              proporcional a la temperatura                      */
 /*              Led que cambia de estado a cada ciclo (2 seg.)     */
-/*              indicando que el programa está activo              */
+/*              indicando que el programa esta activo              */
 /*              JMEC 20230127 Version: 2.0.0                       */
 /*              JMEC 20240506 Version: 2.0.1                       */
+/*              JMEC 20241028 Version: 2.0.1                       */
 /*******************************************************************/
 
 // Librerias
@@ -29,22 +30,22 @@
 #include <libgen.h>
 #include <time.h>
 
-// Definiciones (modificables según necesidades del usuario)
-#define PIN_PWM 1                                         // Pin PWM numero 18, Wiring Pi pin nº 1
+// Definiciones (modificables segun necesidades del usuario)
+#define PIN_PWM 1                                         // Pin PWM numero 18, Wiring Pi pin nÂº 1
 #define PWM_MIN 0                                         // Valor PWM minimo
 #define PWM_MID 750                                       // Valor PWM intermedio [poner a 750 para Raspberry Pi]
 #define PWM_MAX 1023                                      // Valor PWM maximo
-#define PIN_LED 4                                         // Pin PWM numero 23 Wiring Pi pin nº 4 escrich
+#define PIN_LED 4                                         // Pin PWM numero 23 Wiring Pi pin numero 4 escrich
 #define LED_ON 35                                         // Temperatura a partir de la cual enciendo el led verde escrich
 #define LED_OFF 34                                        // Temperatura por debajo de la cual apago el led verde escrich
-#define DIFF_TEMP 2                                       // Diferencia de temperatura minima entre lecturas (2ºC)
-#define TEMP_LOW 20                                       // Valor umbral de temperatura bajo (40ºC) [Poner a 50 para Raspberry Pi] escrich
-#define TEMP_HIGH 50                                      // Valor umbral de temperatura alto (55ºC) [Poner a 60 para Raspberry Pi] escrich
+#define DIFF_TEMP 2                                       // Diferencia de temperatura minima entre lecturas (2 ºC)
+#define TEMP_LOW 20                                       // Valor umbral de temperatura bajo (40 ºC) [Poner a 50 para Raspberry Pi] escrich
+#define TEMP_HIGH 50                                      // Valor umbral de temperatura alto (55 ºC) [Poner a 60 para Raspberry Pi] escrich
 #define T_READS 5                                         // Tiempo de espera entre lecturas de temperatura (5s)
-#define T_ALIVE 300                                        // 600// Tiempo de espera entre escritura en el archivo Log, para determinar que el programa esta en ejecucion (600s -> 10m)
+#define T_ALIVE 300                                       // 600// Tiempo de espera entre escritura en el archivo Log, para determinar que el programa esta en ejecucion (600s -> 10m)
 #define FILE_TEMP "/sys/class/thermal/thermal_zone0/temp" // Ruta y nombre del archivo de acceso a la temperatura
 #define FILE_LOG "/tmp/ventilador.log"                    // Ruta y nombre de archivo .log
-#define LINE_SIZE 256                                     // Tamaño maximo de linea que puede ser escrita en el archivo Log
+#define LINE_SIZE 256                                     // Tamano maximo de linea que puede ser escrita en el archivo Log
 #define MAX_LINES 1000                                    // Numero maximo de lineas que puede contener el archivo Log (1000 lineas)
 
 /*******************************************************************/
@@ -57,7 +58,7 @@ typedef enum
     FAST
 } T_state;
 
-// Prototipo de funciones
+// Catalogo de funciones
 int readTemp(const char *file_path);                      // Funcion de lectura de la temperatura
 void logPrintln(const char *file_path, char *data);       // Funcion para escribir una linea en el archivo Log
 void logRemoveln(const char *file_path, int line_delete); // Funcion para eliminar una linea del archivo Log
@@ -68,18 +69,21 @@ int logLinesnum(const char *file_path);                   // Funcion para consul
 // Funcion principal
 int main(void)
 {
-    int temp_last, temp_now, diff_temp;       // Variables de temperatura
-    T_state state_last, state_now;            // Variables de estado anterior y actual
-    char log_writer[LINE_SIZE] = "";          // Cadena de caracteres para almacenar el mensaje de texto a escribir en el archivo Log
-    time_t lastTime = time(NULL);             // Valor inicial de tiempo
-    int valor_pwm, pwm_act, rango, estadoLed; // Valor a escribir en el pwm y auxiliares para calculos
-    char led[1] = "x";                        // Variable para mostrar el estado del led en el log
-    char encendido[1] = "1";                  // Variable para mostrar el estado del led en el log
-    char apagado[1] = "0";                    // Variable para mostrar el estado del led en el log
-    int porcentaje = 0;                       // Velociadad del ventilador expresada en porcentaje
-    int minutos;                              // Tiempo entre lecturas dividido por 60 para obtener minutos
+    int temp_last = 0; // Variables de temperatura
+    int temp_now = 0;
+    int diff_temp = 0;
 
-    logPrintln((char *)FILE_LOG, (char *)"Arrancando Escrich tempfanPWM...\n"); // Escribimos en el archivo Log
+    T_state state_last, state_now;   // Variables de estado anterior y actual
+    char log_writer[LINE_SIZE] = ""; // Cadena de caracteres para almacenar el mensaje de texto a escribir en el archivo Log
+    time_t lastTime = time(NULL);    // Valor inicial de tiempo
+    int valor_pwm, rango, estadoLed; // Valor a escribir en el pwm y auxiliares para calculos
+    char led[1] = "x";               // Variable para mostrar el estado del led en el log
+    char encendido[1] = "1";         // Variable para mostrar el estado del led en el log
+    char apagado[1] = "0";           // Variable para mostrar el estado del led en el log
+    int porcentaje = 0;              // Velociadad del ventilador expresada en porcentaje
+    int minutos = 0;                 // Tiempo entre lecturas dividido por 60 para obtener minutos
+
+    logPrintln((char *)FILE_LOG, (char *)"Arrancando control de temperatura por ventilador Escrich \n"); // Escribimos en el archivo Log
 
     wiringPiSetup();                          // Inicializamos la libreria WiringPi
     softPwmCreate(PIN_PWM, PWM_MIN, PWM_MAX); // Configuramos el pin "PIN_PWM" como salida PWM en el rango 0 - 1023
@@ -87,7 +91,7 @@ int main(void)
 
     logPrintln((char *)FILE_LOG, (char *)"GPIO configurado\n"); // Escribimos en el archivo Log
 
-    softPwmWrite(PIN_PWM, PWM_MIN); // Ventilador apagado, aquí lo estamos poniendo a cero antes de empezar escrich
+    softPwmWrite(PIN_PWM, PWM_MIN); // Ventilador apagado, aqui­ lo estamos poniendo a cero antes de empezar escrich
     state_now = OFF;                // Inicializamos el estado actual en OFF
     state_last = OFF;               // Inicializamos el ultimo estado en OFF
     digitalWrite(PIN_LED, HIGH);    // Encendemos inicialmente el led verde
@@ -104,7 +108,7 @@ int main(void)
         temp_now = readTemp((char *)FILE_TEMP); // Leer temperatura
         diff_temp = abs(temp_now - temp_last);  // Calcular diferencia de temperatura
 
-        if (diff_temp >= DIFF_TEMP) // Diferencia de temperatura mayor que DIFF_TEMP (2ºC)
+        if (diff_temp >= DIFF_TEMP) // Diferencia de temperatura mayor que DIFF_TEMP (2 ºC)
         {
 
             // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -126,7 +130,7 @@ int main(void)
             //     estadoLed, HIGH;
 
             if (estadoLed == LOW)
-                estadoLed = HIGH;   // Enciende y apaga el led a cada ciclo para indicar que está funcionando
+                estadoLed = HIGH; // Enciende y apaga el led a cada ciclo para indicar que esta funcionando
             else
                 estadoLed = LOW;
 
@@ -140,18 +144,15 @@ int main(void)
             // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
             softPwmWrite(PIN_PWM, valor_pwm); // Ventilador apagado
-
-            //sprintf(log_writer, "Temperatura actual  (%d C), ventilador (%% %d)\n", temp_now, porcentaje); // Preparamos lo que se va a escribir en el archivo Log
-            //logPrintln((char *)FILE_LOG, (char *)log_writer);                                              // Escribimos en el archivo Log
         }
 
-        if ((time(NULL) - lastTime) >= T_ALIVE) // Si ha transcurrido T_ALIVE (1min) o más, escribimos en el Log un mensaje
+        if ((time(NULL) - lastTime) >= T_ALIVE) // Si ha transcurrido T_ALIVE (1min) o mas, escribimos en el Log un mensaje
         {
             sprintf(log_writer, "Estado del programa: Activo y funcionando desde hace %d minutos mas\n ", minutos); // Escribimos en el archivo Log
             logPrintln((char *)FILE_LOG, (char *)log_writer);
 
             sprintf(log_writer, "Temperatura actual = %d, Estado del pwm = %d, Porcentaje ventilador = %d \n", temp_now, valor_pwm, porcentaje); // Preparamos lo que se va a escribir en el archivo Log
-            logPrintln((char *)FILE_LOG, (char *)log_writer);                                                                         // Escribimos en el archivo Log
+            logPrintln((char *)FILE_LOG, (char *)log_writer);                                                                                    // Escribimos en el archivo Log
 
             lastTime = time(NULL);
         }
@@ -202,10 +203,10 @@ void logPrintln(const char *file_path, char *data)
     sprintf(date, "[%d/%d/%d-%d:%d:%d] ", tm_date->tm_mday, tm_date->tm_mon + 1, tm_date->tm_year + 1900, tm_date->tm_hour, tm_date->tm_min, tm_date->tm_sec);
 
     // Preparamos la linea a escribir
-    strcat(data_line, date); // Añadimos a "data_line" el contnido de "date"
-    strcat(data_line, data); // Añadimos a "data_line" el contenido de "data"
+    strcat(data_line, date); // AÃ±adimos a "data_line" el contnido de "date"
+    strcat(data_line, data); // AÃ±adimos a "data_line" el contenido de "data"
 
-    if ((file = fopen(file_path, "a")) != NULL) // Abrimos el archivo para añadir datos
+    if ((file = fopen(file_path, "a")) != NULL) // Abrimos el archivo para aÃ±adir datos
     {
         fputs(data_line, file); // Escribimos los datos en el archivo
         fclose(file);           // Cerramos el archivo
@@ -217,12 +218,12 @@ void logRemoveln(const char *file_path, int line_delete)
 {
     FILE *file, *file_temp;         // Punteros a tipo archivo (para manejar los archivos)
     char tempFile[32] = "";         // Ruta y nombre del archivo temporal
-    char line_read[LINE_SIZE] = ""; // Array de caracteres para almacenar cada lectura de linea (tamaño maximo de linea, 128 caracteres)
+    char line_read[LINE_SIZE] = ""; // Array de caracteres para almacenar cada lectura de linea (tamaÃ±o maximo de linea, 128 caracteres)
     int num_line = 1;               // Variable para llevar la cuenta de las lineas leidas
     int open_tempFile = 0;          // Variable para determinar si se ha podido crear el archivo temporal
 
-    strcat(tempFile, file_path); // Añade al primer array el contenido del segundo ("/tmp/" + nombre del archivo original)
-    strcat(tempFile, ".tmp");    // Añade la extension .tmp al nombre del archivo temporal
+    strcat(tempFile, file_path); // AÃ±ade al primer array el contenido del segundo ("/tmp/" + nombre del archivo original)
+    strcat(tempFile, ".tmp");    // AÃ±ade la extension .tmp al nombre del archivo temporal
 
     if ((file = fopen(file_path, "r")) != NULL) // Abrir el archivo en modo lectura
     {
@@ -233,7 +234,7 @@ void logRemoveln(const char *file_path, int line_delete)
             {
                 if (num_line != line_delete) // Si la linea de lectura no es la linea a eliminar
                 {
-                    strcat(line_read, "\n");     // Añadimos el caracter de fin de linea (que no es leido con fs
+                    strcat(line_read, "\n");     // AÃ±adimos el caracter de fin de linea (que no es leido con fs
                     fputs(line_read, file_temp); // Escribimos dicha linea en el archivo de escritura
                 }
                 num_line = num_line + 1; // Incrementamos el numero de linea leida
@@ -256,7 +257,7 @@ int logLinesnum(const char *file_path)
 {
     FILE *file;                // Puntero a tipo archivo (para manejar el archivo)
     int num_lines = 0;         // Variable para contar el numero de lineas y para devolverla al salir de la funcion
-    char line[LINE_SIZE] = ""; // Array de caracteres para almacenar cada lectura de linea (tamaño maximo de linea, 128 caracteres)
+    char line[LINE_SIZE] = ""; // Array de caracteres para almacenar cada lectura de linea (tamaÃ±o maximo de linea, 128 caracteres)
 
     if ((file = fopen(file_path, "r")) != NULL) // Abrir el archivo en modo lectura
     {
