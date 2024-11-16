@@ -86,6 +86,12 @@ También encontrarás un log en el directorio /tmp/, que se llama ventilador.log
 y que te proporciona información del estado del control del ventilador
 
 
+Nota: Posiblmenete tengas que instalar wiringpi, si es así, el procedimiento es el siguiente:
+
+cd /tmp
+wget https://project-downloads.drogon.net/wiringpi-latest.deb
+sudo dpkg -i wiringpi-latest.deb
+
 
 
 
