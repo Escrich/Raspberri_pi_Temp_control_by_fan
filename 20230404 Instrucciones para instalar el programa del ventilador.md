@@ -1,6 +1,10 @@
+# Control de ventilador en función de la temperatura
+
+## Instalación
+
 Para instalar el control del ventilador en tu raspberry, necesitas seguir los siguientes pasos:
 
-Metodo largo, compilando:
+### Metodo largo, compilando:
 
 cd $HOME
 
@@ -14,14 +18,14 @@ sudo cp tempfanpwm /usr/bin/tempfanpwm
 
 
 
-Opcional:
+### Opcional:
 Si quieres probar que funciona:
 
 sudo ./tempfanpwm
 
 
 
-Continuamos:
+### Continuamos:
 
 cd $HOME
 
@@ -54,7 +58,7 @@ Este metodo largo te permite tener el código fuente, (tempfanpwm.c), y hacer ca
 
 
 
-Metodo corto, copiando el ejecutable que está en:
+## Metodo corto, copiando el ejecutable que está en:
 https://github.com/Escrich/Raspberri_pi_Temp_control_by_fan/blob/master/Compiled_executable_file/tempfanpwm
 
 Baja este fichero y ponlo en tu maquina, por ejemplo en el directorio /home/pi, a partir de ahí ejecuta los siguientes comandos:
@@ -86,14 +90,15 @@ También encontrarás un log en el directorio /tmp/, que se llama ventilador.log
 y que te proporciona información del estado del control del ventilador
 
 
-Nota: Posiblmenete tengas que instalar wiringpi, si es así, el procedimiento es el siguiente:
+### Nota: Posiblemente tengas que instalar wiringpi, si es así, el procedimiento es el siguiente:
 
 
-cd /tmp
 
-wget https://project-downloads.drogon.net/wiringpi-latest.deb
+'cd /tmp'
 
-sudo dpkg -i wiringpi-latest.deb
+'wget https://project-downloads.drogon.net/wiringpi-latest.deb'
+
+'sudo dpkg -i wiringpi-latest.deb'
 
 
 
