@@ -6,7 +6,7 @@ Para instalar el control del ventilador en tu Raspberry, necesitas seguir los si
 
 ### Metodo largo, compilando:
 
-```
+```bash
 cd $HOME
 git clone https://github.com/Escrich/Raspberri_pi_Temp_control_by_fan.git
 cd Raspberri_pi_Temp_control_by_fan/Source_code
@@ -19,7 +19,7 @@ sudo cp tempfanpwm /usr/bin/tempfanpwm
 ### Opcional:
 Si quieres probar que funciona:
 
-```
+```bash
 sudo ./tempfanpwm
 ```
 
@@ -27,14 +27,14 @@ sudo ./tempfanpwm
 
 ### Continuamos:
 
-```
+```bash
 cd $HOME
 sudo nano /etc/rc.local
 ```
 
 Una vez aquí dentro, siempre por encima de la linea donde pone exit 0, escribimos las siguientes lineas:
 
-```
+```bash
 #echo " Control automatico de ventilador en marcha "
 echo
 tempfanpwm &
@@ -47,7 +47,7 @@ Salvamos con control o, y salimos con control x
 
 Reiniciamos la Raspberry con:
 
-```
+```bash
 sudo reboot now
 ```
 
@@ -67,7 +67,7 @@ https://github.com/Escrich/Raspberri_pi_Temp_control_by_fan/blob/master/Compiled
 
 Baja este fichero y ponlo en tu maquina, por ejemplo en el directorio /home/pi, a partir de ahí ejecuta los siguientes comandos:
 
-```
+```bash
 cd $HOME
 sudo cp tempfanpwm /usr/bin/tempfanpwm
 sudo nano /etc/rc.local
@@ -75,7 +75,7 @@ sudo nano /etc/rc.local
 
 Una vez aquí dentro, siempre por encima de la linea donde pone exit 0, escribimos las siguientes lineas:
 
-```
+```bash
 #echo " Control automatico de ventilador en marcha "
 echo
 tempfanpwm &
@@ -87,7 +87,7 @@ Salvamos con control o y salimos con control x
 
 Reiniciamos la Raspberry con:
 
-```
+```bash
 sudo reboot now
 ```
 
@@ -105,7 +105,7 @@ y que te proporciona información del estado del control del ventilador
 ### Nota: Posiblemente tengas que instalar wiringpi, si es así, el procedimiento es el siguiente:
 
 
-```
+```bash
 cd /tmp
 wget https://project-downloads.drogon.net/wiringpi-latest.deb
 sudo dpkg -i wiringpi-latest.deb
