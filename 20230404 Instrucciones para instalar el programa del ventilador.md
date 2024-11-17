@@ -2,7 +2,7 @@
 
 ## Instalación
 
-Para instalar el control del ventilador en tu raspberry, necesitas seguir los siguientes pasos:
+Para instalar el control del ventilador en tu Raspberry, necesitas seguir los siguientes pasos:
 
 ### Metodo largo, compilando:
 
